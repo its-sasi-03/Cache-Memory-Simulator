@@ -232,6 +232,87 @@ void setAssociative()
             (hits + misses)
          << endl;
 }
+void fullyAssociativeLRU()
+{
+    int cacheSize;
+
+    cout << "Enter Cache Size: ";
+    cin >> cacheSize;
+
+    vector<int> cache;
+
+    int n;
+
+    cout << "Enter Number of Memory Accesses: ";
+    cin >> n;
+
+    int hits = 0;
+    int misses = 0;
+
+    cout << "Enter Memory Access Sequence:\n";
+
+    for(int i = 0; i < n; i++)
+    {
+        int block;
+        cin >> block;
+
+        auto it = find(cache.begin(),
+                       cache.end(),
+                       block);
+
+        if(it != cache.end())
+        {
+            hits++;
+
+            cache.erase(it);
+
+            cache.push_back(block);
+
+            cout << block
+                 << " -> HIT\n";
+        }
+        else
+        {
+            misses++;
+
+            if(cache.size() < cacheSize)
+            {
+                cache.push_back(block);
+            }
+            else
+            {
+                cache.erase(cache.begin());
+
+                cache.push_back(block);
+            }
+
+            cout << block
+                 << " -> MISS\n";
+        }
+    }
+
+    cout << "\nFinal Cache:\n";
+
+    for(int i = 0; i < cache.size(); i++)
+    {
+        cout << "Line "
+             << i
+             << " : Block "
+             << cache[i]
+             << endl;
+    }
+
+    cout << "\nHits: "
+         << hits;
+
+    cout << "\nMisses: "
+         << misses;
+
+    cout << "\nHit Ratio: "
+         << (double)hits /
+            (hits + misses)
+         << endl;
+}
 
 int main()
 {
@@ -242,7 +323,8 @@ int main()
     cout << "1. Direct Mapping\n";
     cout << "2. Fully Associative\n";
     cout << "3. Set Associative\n";
-    cout << "4. Exit\n";
+    cout << "4. Fully Associative (LRU)\n";
+    cout << "5. Exit\n";
 
     cout << "\nEnter Choice: ";
     cin >> choice;
@@ -262,7 +344,12 @@ int main()
             break;
 
         case 4:
+            fullyAssociativeLRU();
+            break;
+
+        case 5:
             return 0;
+            
 
         default:
             cout << "Invalid Choice\n";
